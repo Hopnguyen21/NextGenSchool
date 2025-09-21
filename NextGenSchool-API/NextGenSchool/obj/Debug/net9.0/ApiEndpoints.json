@@ -1,0 +1,39 @@
+[
+  {
+    "ContainingType": "NextGenSchool.Controller.AuthController",
+    "Method": "GetUser",
+    "RelativePath": "api/Auth",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "phone",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "NextGenSchool.Controller.AuthController",
+    "Method": "VerifyOtp",
+    "RelativePath": "api/Auth/verify-otp",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "phone",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "otp",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

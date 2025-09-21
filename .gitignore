@@ -1,9 +1,36 @@
-# Node.js
-node_modules/
-dist/
-build/
-.env
+# =========================
+# Node / React
+# =========================
+ReactUI/my-app/node_modules/
+ReactUI/my-app/dist/
+ReactUI/my-app/build/
+ReactUI/my-app/.env
+ReactUI/my-app/npm-debug.log*
+ReactUI/my-app/yarn-debug.log*
+ReactUI/my-app/yarn-error.log*
+ReactUI/my-app/pnpm-debug.log*
+
+# =========================
+# .NET / Visual Studio
+# =========================
+NextGenSchool-API/bin/
+NextGenSchool-API/obj/
+NextGenSchool-API/.vs/
+NextGenSchool-API/*.user
+NextGenSchool-API/*.suo
+NextGenSchool-API/*.njsproj
+NextGenSchool-API/*.sln.docstates
+
+# =========================
+# Editor / System
+# =========================
+.vscode/
+.idea
+.DS_Store
 *.log
 
-# Others
-.DS_Store
+# =========================
+# Optional / Local
+# =========================
+*.db
+*.local
