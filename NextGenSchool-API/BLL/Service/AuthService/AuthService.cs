@@ -1,4 +1,6 @@
-﻿using DAL.Entities;
+﻿using BLL.Service.JwtService;
+using BLL.Service.OtpService;
+using DAL.Entities;
 using DAL.Repository.UserRepo;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
@@ -16,83 +18,26 @@ namespace BLL.Service.AuthService
     public class AuthService : IAuthService
     {
         private readonly IUserRepo _userRepo;
-        private readonly IConfiguration _config;
-        private readonly IMemoryCache _cache;
-        private readonly TimeSpan _ttl = TimeSpan.FromMinutes(5);
-        public AuthService(IUserRepo userRepo, IConfiguration config, IMemoryCache cache)
+        private readonly IOtpService _otpService;
+        private readonly IJwtService _jwtService;
+        public AuthService(IUserRepo userRepo, IOtpService otpService, IJwtService jwtService)
         {
             _userRepo = userRepo;
-            _config = config;
-            _cache = cache;
+            _otpService = otpService;
+            _jwtService = jwtService;
         }
-
-        #region OTP
-
-        public string GenerateOtp(string phone)
-        {
-            var otp = Generate6DigitOtp();
-            _cache.Set(phone, otp, _ttl);
-            return otp;
-        }
-
-        public bool ValidateOtp(string phone, string otp)
-        {
-            if(_cache.TryGetValue<string>(phone,out var storeotp))
-            {
-                if(storeotp == otp)
-                {
-                    _cache.Remove(phone);
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private string Generate6DigitOtp()
-        {
-           using var rng = RandomNumberGenerator.Create();
-           var bytes = new byte[4];
-            rng.GetBytes(bytes);
-            uint value  = BitConverter.ToUInt32(bytes, 0);
-            int otp = (int)(value % 1_000_000);
-            return otp.ToString("D6");
-        }
-
-        #endregion
-
-        #region JWT/Login
 
         public async Task<User?> LoginByPhoneAsync(string phoneNumber)
         {
             return await _userRepo.LoginPhone(phoneNumber);
         }
 
-        public async Task<string?> GenerateJwtTokenAsync(User user)
-        {
-            if (user == null) return null;
+        // OTP
+        public string GenerateOtp(string phone) => _otpService.GenerateOtp(phone);
+        public bool ValidateOtp(string phone, string otp) => _otpService.ValidateOtp(phone, otp);
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
-                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
-                new Claim("phone", user.Phone ?? ""),
-                new Claim("tenantId", user.TenantId?.ToString() ?? "")
-            };
-
-            var token = new JwtSecurityToken(
-                issuer: _config["Jwt:Issuer"],
-                audience: _config["Jwt:Audience"],
-                claims: claims,
-                expires: DateTime.UtcNow.AddHours(4),
-                signingCredentials: creds
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
-
-        #endregion
+        // JWT
+        public Task<string?> GenerateJwtTokenAsync(User user) => _jwtService.GenerateJwtTokenAsync(user);
     }
+
 }

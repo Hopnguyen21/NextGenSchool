@@ -9,9 +9,11 @@ namespace BLL.Service.AuthService
 {
     public interface IAuthService
     {
+       
+        Task<User?> LoginByPhoneAsync(string phoneNumber);
         string GenerateOtp(string phone);
         bool ValidateOtp(string phone, string otp);
-        Task<User?> LoginByPhoneAsync(string phoneNumber);
         Task<string?> GenerateJwtTokenAsync(User user);
+
     }
 }

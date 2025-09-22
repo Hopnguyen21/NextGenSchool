@@ -1,4 +1,6 @@
 using BLL.Service.AuthService;
+using BLL.Service.JwtService;
+using BLL.Service.OtpService;
 using BLL.Service.UserService;
 using DAL.Repository.UserRepo;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -67,6 +69,8 @@ namespace NextGenSchool
             builder.Services.AddScoped<IUserRepo, UserRepo>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IJwtService, JwtService>();
+            builder.Services.AddScoped<IOtpService, OtpService>();
 
 
             builder.Services.AddMemoryCache();
