@@ -1,4 +1,4 @@
-import NavbarPublic from "../Component/NavbarPublic";
+import NavbarPublic from "../components/NavbarPublic";
 export default function HomePage() {
   return (
     <div>

@@ -29,7 +29,13 @@ namespace BLL.Service.AuthService
 
         public async Task<User?> LoginByPhoneAsync(string phoneNumber)
         {
-            return await _userRepo.LoginPhone(phoneNumber);
+            var result = await _userRepo.LoginPhone(phoneNumber);
+            if (!result.LoginType)
+            {
+                return null;
+
+            }
+            return result;
         }
 
         // OTP

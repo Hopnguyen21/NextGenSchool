@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";;
-
+import { Button } from "./ui/button";
 export default function navbarpublic(){
     return (
         <nav className="bg-while shadow-lg h-16 sticky top-0 z-50">
@@ -21,7 +21,7 @@ export default function navbarpublic(){
             </div>
             <div>
                 <Link to="/login">
-                <button className="bg-[#008CB8] text-white px-4 py-2 rounded-2xl font-bold">Login</button>
+                <Button className="bg-[#008CB8] text-white px-4 py-2 rounded-2xl font-bold">Login</Button>
                 </Link>
             </div>
             </div>
