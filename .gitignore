@@ -13,8 +13,17 @@ ReactUI/my-app/pnpm-debug.log*
 # =========================
 # .NET / Visual Studio
 # =========================
-NextGenSchool-API/bin/
-NextGenSchool-API/obj/
+# API project
+NextGenSchool-API/NextGenSchool/bin/
+NextGenSchool-API/NextGenSchool/obj/
+# BLL project
+NextGenSchool-API/BLL/bin/
+NextGenSchool-API/BLL/obj/
+# DAL project
+NextGenSchool-API/DAL/bin/
+NextGenSchool-API/DAL/obj/
+
+# Visual Studio settings
 NextGenSchool-API/.vs/
 NextGenSchool-API/*.user
 NextGenSchool-API/*.suo
