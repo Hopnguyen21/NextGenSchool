@@ -1,18 +1,20 @@
 import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { sendOtp, verifyOtp } from "../Api/userService";
+import { OtpDialog } from "@/components/OtpDialog";
+import { useNavigate } from "react-router-dom";
+import { Input } from "@/components/ui/input";
 
 export default function LoginPage() {
   const [overlayOnLeft, setOverlayOnLeft] = useState(true);
   const [phone, setPhone] = useState("");
-  const [otp, setOtp] = useState("");
   const [showOtpDialog, setShowOtpDialog] = useState(false);
-
+const navigate = useNavigate();
   const handleSendOtp = async () => {
   try {
     const data = await sendOtp(phone);
-    console.log("Send OTP response:", data); // log toàn bộ backend trả về
-
+    console.log("Send OTP response:", data); 
+      setShowOtpDialog(true); 
   } catch (err: any) {
     console.error("Error sending OTP:", err.response?.data || err.message);
     alert("Error: " + (err.response?.data || err.message));
@@ -20,31 +22,34 @@ export default function LoginPage() {
 };
 
 
-  const handleVerifyOtp = async () => {
-    try {
-      const data = await verifyOtp(phone, otp);
-      if (data.message === "Login success") {
-        window.location.href = "/dashboard"; // điều hướng
-      } else {
-        alert("Login failed: " + (data.message || "Invalid OTP"));
-      }
-    } catch (err: any) {
-      alert(err.message || "Error while verifying OTP");
+ const handleVerifyOtp = async (otp: string) => {
+  try {
+    const data = await verifyOtp(phone, otp);
+    if (data != null) {
+     navigate("/dashboard");
+    } else {
+      alert("Login failed: " + (data.message || "Invalid OTP"));
     }
-  };
+  } catch (err: any) {
+    alert(err.message || "Error while verifying OTP");
+  }
+};
+
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
       <div className="relative w-[720px] max-w-full h-[460px] rounded-xl shadow-2xl overflow-hidden flex">
         {/* Left - Login */}
-        <div className="w-1/2 h-full bg-white flex items-center justify-center">
+        <div className={`w-1/2 h-full bg-white flex items-center justify-center transition-all duration-1000 ${
+  overlayOnLeft ? "opacity-100" : "opacity-0 pointer-events-none"
+}`}>
           <div className="max-w-[260px] w-full text-center">
             <h2 className="text-4xl font-bold mb-4 text-[#008CB8]">Login</h2>
             <div>
               <label htmlFor="phone" className="block mb-1 text-left font-bold">
                 Phone Number
               </label>
-              <input
+              <Input
                 type="text"
                 id="phone"
                 placeholder="PhoneNumber"
@@ -59,6 +64,11 @@ export default function LoginPage() {
             >
               Login
             </button>
+<OtpDialog
+  open={showOtpDialog}
+  onOpenChange={setShowOtpDialog}
+  onVerify={(otp) => handleVerifyOtp(otp)}
+/>
 
             <div className="flex items-center my-6">
               <hr className="flex-grow border-gray-300" />
@@ -79,20 +89,22 @@ export default function LoginPage() {
         </div>
 
         {/* Right - Register */}
-        <div className="w-1/2 h-full bg-white flex items-center justify-center">
+        <div className={`w-1/2 h-full bg-white flex items-center justify-center transition-all duration-1000 ${
+  overlayOnLeft ? "opacity-0 pointer-events-none" : "opacity-100"
+}`}>
           <div className="max-w-[260px] w-full text-center">
             <h2 className="text-2xl font-bold mb-4">Register</h2>
-            <input
+            <Input
               type="text"
               placeholder="Username"
               className="border p-2 mb-3 w-full rounded"
             />
-            <input
+            <Input
               type="email"
               placeholder="Email"
               className="border p-2 mb-3 w-full rounded"
             />
-            <input
+            <Input
               type="password"
               placeholder="Password"
               className="border p-2 mb-3 w-full rounded"
@@ -123,35 +135,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* OTP Dialog */}
-      {showOtpDialog && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-[300px] text-center">
-            <h2 className="text-xl font-bold mb-4">Enter OTP</h2>
-            <input
-              type="text"
-              placeholder="Enter OTP"
-              className="border p-2 mb-3 w-full rounded"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-            />
-            <div className="flex gap-2">
-              <button
-                onClick={handleVerifyOtp}
-                className="flex-1 bg-[#008CB8] text-white px-4 py-2 rounded hover:opacity-90"
-              >
-                Verify
-              </button>
-              <button
-                onClick={() => setShowOtpDialog(false)}
-                className="flex-1 bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
+    
   );
 }

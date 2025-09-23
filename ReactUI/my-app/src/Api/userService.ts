@@ -4,6 +4,6 @@ export const sendOtp = async (phone: string): Promise<{ message: string; otp?: s
   return res.data;
 };
 export const verifyOtp = async (phone: string, otp: string) => {
-  const res = await apiClient.get(`/Auth/verify-otp?phone=${phone}&otp=${otp}`);
+  const res = await apiClient.post(`/Auth/verify-otp?phone=${phone}&otp=${otp}`);
   return res.data;
 }
