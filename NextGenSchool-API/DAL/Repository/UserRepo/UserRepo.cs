@@ -1,4 +1,5 @@
-﻿using DAL.Entities;
+﻿using DAL.DTO;
+using DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -14,9 +15,35 @@ namespace DAL.Repository.UserRepo
         public UserRepo() {
             _context = new NgschoolContext();
         }
-        public async Task<User?> LoginPhone(string phonenumber)
+        public async Task<ProfileUserDTO?> LoginPhone(string phonenumber)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Phone == phonenumber);
+            var user = await _context.Users
+         .Where(u => u.Phone == phonenumber)
+         .Include(u => u.UsersRoles)
+             .ThenInclude(ur => ur.Role)
+         .FirstOrDefaultAsync();
+
+            if (user == null)
+                return null;
+
+            // Map sang DTO
+            var userDto = new ProfileUserDTO
+            {
+                UserId = user.UserId,
+                UserName = user.UserName,
+                AvatarUrl = user.AvatarUrl,
+                Email = user.Email,
+                Phone = user.Phone,
+                TenantId = user.TenantId,
+                IsActive = user.IsActive,
+                // Nếu user có nhiều role, lấy role đầu tiên (hoặc thay đổi DTO thành List)
+                RoleId = user.UsersRoles.Select(ur => ur.Role.RoleId).FirstOrDefault(),
+                RoleName = user.UsersRoles.Select(ur => ur.Role.RoleName).FirstOrDefault(),
+                 LoginType = user.LoginType,
+            };
+            
+
+            return userDto;
         }
     }
 }

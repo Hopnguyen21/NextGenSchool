@@ -1,4 +1,5 @@
-﻿using DAL.Entities;
+﻿using DAL.DTO;
+using DAL.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -15,7 +16,7 @@ namespace BLL.Service.JwtService
     {
         private readonly IConfiguration _config;
         public JwtService(IConfiguration config) { _config = config; }
-        public async Task<string?> GenerateJwtTokenAsync(User user)
+        public async Task<string?> GenerateJwtTokenAsync(ProfileUserDTO user)
         {
             if (user == null) return null;
 

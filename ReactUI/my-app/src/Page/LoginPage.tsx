@@ -1,52 +1,58 @@
 import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
-import { sendOtp, verifyOtp } from "../Api/userService";
 import { OtpDialog } from "@/components/OtpDialog";
-import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function LoginPage() {
   const [overlayOnLeft, setOverlayOnLeft] = useState(true);
   const [phone, setPhone] = useState("");
   const [showOtpDialog, setShowOtpDialog] = useState(false);
-const navigate = useNavigate();
+  const navigate = useNavigate();
+
+  const { sendOtp, verifyOtp, loading } = useAuth();
+
   const handleSendOtp = async () => {
-  try {
-    const data = await sendOtp(phone);
-    console.log("Send OTP response:", data); 
-      setShowOtpDialog(true); 
-  } catch (err: any) {
-    console.error("Error sending OTP:", err.response?.data || err.message);
-    alert("Error: " + (err.response?.data || err.message));
-  }
-};
-
-
- const handleVerifyOtp = async (otp: string) => {
-  try {
-    const data = await verifyOtp(phone, otp);
-    if (data != null) {
-     navigate("/dashboard");
-    } else {
-      alert("Login failed: " + (data.message || "Invalid OTP"));
+    try {
+      const data = await sendOtp(phone);
+      console.log("Send OTP response:", data);
+      setShowOtpDialog(true);
+    } catch (err: any) {
+      console.error("Error sending OTP:", err.response?.data || err.message);
+      alert("Error: " + (err.response?.data || err.message));
     }
-  } catch (err: any) {
-    alert(err.message || "Error while verifying OTP");
-  }
-};
+  };
 
+  const handleVerifyOtp = async (otp: string) => {
+    try {
+      const data = await verifyOtp(phone, otp);
+      if (data.token && data.user) {
+        navigate("/dashboard");
+      } else {
+        alert("Login failed: " + (data.message || "Invalid OTP"));
+      }
+    } catch (err: any) {
+      alert(err.message || "Error while verifying OTP");
+    }
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
       <div className="relative w-[720px] max-w-full h-[460px] rounded-xl shadow-2xl overflow-hidden flex">
         {/* Left - Login */}
-        <div className={`w-1/2 h-full bg-white flex items-center justify-center transition-all duration-1000 ${
-  overlayOnLeft ? "opacity-100" : "opacity-0 pointer-events-none"
-}`}>
+        <div
+          className={`w-1/2 h-full bg-white flex items-center justify-center transition-all duration-1000 ${
+            overlayOnLeft ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`}
+        >
           <div className="max-w-[260px] w-full text-center">
             <h2 className="text-4xl font-bold mb-4 text-[#008CB8]">Login</h2>
             <div>
-              <label htmlFor="phone" className="block mb-1 text-left font-bold">
+              <label
+                htmlFor="phone"
+                className="block mb-1 text-left font-bold"
+              >
                 Phone Number
               </label>
               <Input
@@ -62,13 +68,14 @@ const navigate = useNavigate();
               onClick={handleSendOtp}
               className="w-full bg-[#008CB8] text-white px-4 py-2 rounded hover:opacity-90"
             >
-              Login
+              {loading ? "Sending..." : "Login"}
             </button>
-<OtpDialog
-  open={showOtpDialog}
-  onOpenChange={setShowOtpDialog}
-  onVerify={(otp) => handleVerifyOtp(otp)}
-/>
+
+            <OtpDialog
+              open={showOtpDialog}
+              onOpenChange={setShowOtpDialog}
+              onVerify={(otp) => handleVerifyOtp(otp)}
+            />
 
             <div className="flex items-center my-6">
               <hr className="flex-grow border-gray-300" />
@@ -89,9 +96,11 @@ const navigate = useNavigate();
         </div>
 
         {/* Right - Register */}
-        <div className={`w-1/2 h-full bg-white flex items-center justify-center transition-all duration-1000 ${
-  overlayOnLeft ? "opacity-0 pointer-events-none" : "opacity-100"
-}`}>
+        <div
+          className={`w-1/2 h-full bg-white flex items-center justify-center transition-all duration-1000 ${
+            overlayOnLeft ? "opacity-0 pointer-events-none" : "opacity-100"
+          }`}
+        >
           <div className="max-w-[260px] w-full text-center">
             <h2 className="text-2xl font-bold mb-4">Register</h2>
             <Input
@@ -134,8 +143,6 @@ const navigate = useNavigate();
           </button>
         </div>
       </div>
-
     </div>
-    
   );
 }

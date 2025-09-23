@@ -1,5 +1,6 @@
 ﻿using BLL.Service.JwtService;
 using BLL.Service.OtpService;
+using DAL.DTO;
 using DAL.Entities;
 using DAL.Repository.UserRepo;
 using Microsoft.Extensions.Caching.Memory;
@@ -27,13 +28,12 @@ namespace BLL.Service.AuthService
             _jwtService = jwtService;
         }
 
-        public async Task<User?> LoginByPhoneAsync(string phoneNumber)
+        public async Task<ProfileUserDTO?> LoginByPhoneAsync(string phoneNumber)
         {
             var result = await _userRepo.LoginPhone(phoneNumber);
-            if (!result.LoginType)
+            if (result == null || !result.LoginType)
             {
                 return null;
-
             }
             return result;
         }
@@ -43,7 +43,7 @@ namespace BLL.Service.AuthService
         public bool ValidateOtp(string phone, string otp) => _otpService.ValidateOtp(phone, otp);
 
         // JWT
-        public Task<string?> GenerateJwtTokenAsync(User user) => _jwtService.GenerateJwtTokenAsync(user);
+        public Task<string?> GenerateJwtTokenAsync(ProfileUserDTO user) => _jwtService.GenerateJwtTokenAsync(user);
     }
 
 }

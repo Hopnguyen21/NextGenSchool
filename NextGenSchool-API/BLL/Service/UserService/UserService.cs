@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DAL.DTO;
 
 namespace BLL.Service.UserService
 {
@@ -15,7 +16,7 @@ namespace BLL.Service.UserService
         {
             _userRepo = new UserRepo();
         }
-        public Task<User?> Login(string PhoneNumber)
+        public Task<ProfileUserDTO?> Login(string PhoneNumber)
         {
             return _userRepo.LoginPhone(PhoneNumber);
         }

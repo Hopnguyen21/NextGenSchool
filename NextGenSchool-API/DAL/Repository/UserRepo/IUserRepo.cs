@@ -1,4 +1,5 @@
-﻿using DAL.Entities;
+﻿using DAL.DTO;
+using DAL.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace DAL.Repository.UserRepo
 {
     public interface IUserRepo
     {
-        Task<User?> LoginPhone(string phoneNumber);
+        Task<ProfileUserDTO?> LoginPhone(string phoneNumber);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using BLL.Service.AuthService;
 using BLL.Service.UserService;
+using DAL.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
@@ -41,8 +42,7 @@ namespace NextGenSchool.Controller
             return Ok(new
             {
                 token,
-                userId = user.UserId,
-                userName = user.UserName
+                user
             });
         }
     }

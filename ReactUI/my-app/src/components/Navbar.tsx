@@ -1,14 +1,15 @@
 import React from "react";
 import { FaBars, FaBell } from "react-icons/fa";
-import DropdownMenu from "../components/Navcompo/DropdownMenu"; // import lại component của bạn
+import DropdownMenu from "../components/Navcompo/DropdownMenu";
+import { useUser } from "../Context/UserContext";
 
 interface NavbarProps {
   onToggleSidebar: () => void;
-  userName?: string;
-  avatarUrl?: string;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, userName, avatarUrl }) => {
+const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
+  const { user } = useUser(); // Lấy thông tin user từ context
+
   return (
     <nav className="bg-white shadow px-4 py-2 flex items-center justify-between sticky top-0 z-50">
       {/* Left: toggle + logo + title */}
@@ -29,8 +30,12 @@ const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, userName, avatarUrl })
           </span>
         </button>
 
-        {/* DropdownMenu import */}
-        <DropdownMenu userName={userName} avatarUrl={avatarUrl} />
+        {/* Truyền userName + roleName từ context */}
+        <DropdownMenu
+          userName={user?.userName}
+          roleName={user?.roleName}
+          avatarUrl={user?.avatarUrl}
+        />
       </div>
     </nav>
   );

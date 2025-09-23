@@ -1,4 +1,5 @@
-﻿using DAL.Entities;
+﻿using DAL.DTO;
+using DAL.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,10 @@ namespace BLL.Service.AuthService
     public interface IAuthService
     {
        
-        Task<User?> LoginByPhoneAsync(string phoneNumber);
+        Task<ProfileUserDTO?> LoginByPhoneAsync(string phoneNumber);
         string GenerateOtp(string phone);
         bool ValidateOtp(string phone, string otp);
-        Task<string?> GenerateJwtTokenAsync(User user);
+        Task<string?> GenerateJwtTokenAsync(ProfileUserDTO user);
 
     }
 }
